@@ -1,0 +1,62 @@
+1-> Create EKS
+eksctl create cluster --name flaskawseks --version 1.15 --node-type t3.micro --nodes 2
+
+2- Create Python Virtual ENV
+>python3 -m venv eksflask
+>source eksflask/bin/activate
+>pip install
+--run job 
+>python ./src/app.py
+>deactivate
+
+-- list pkg for req.txt file
+>source eksflask/bin/activate
+>pip freeze
+
+3-Containerizing the Program 
+-- create dcokerfile 
+--create container
+>docker build -t flask-sample .
+>docker images
+--run app from docker 
+>docker run -d -p 5000:5000 flask-sample
+>docker ps
+>docker logs <container-id-3d7f0dd3be8> 
+
+
+--login to docker account 
+>docker login
+
+--create docker repo 
+-- tag the image 
+docker tag flask-sample wishcloudsingh/faskdemo01
+ 
+
+--push the image 
+docker push wishcloudsingh/faskdemo01
+
+EKS - 
+eksctl version 
+-- to deploy container image we create deployment file 
+
+>kubectl cluster-info
+>kubectl get pods 
+>kubectl get nodes
+
+cool trick to create file 
+> kubectl create deployment flaskdemo --image=wishcloudsingh/flaskdemo --dry-run=client -o yaml > flaskdeployment.yaml
+-- deploy this to eks 
+>kubectl apply -f flaskdeployment.yaml
+
+> kubectl get pods
+
+
+4 - Publish expose our container to the world 
+ create a service and point that to the pod and we will scale this with replica set 
+
+-- update  replicas = 3 --this will create 3 pod  (add new section) - Service
+kubectl apply -f flaskdeployment.yaml
+
+-- get Service name 
+>kubectl get service 
+
